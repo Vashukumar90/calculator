@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyberpunk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProCalc | High-End Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Background Elements for Atmosphere -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <main class="calculator-container">
+        <!-- Header & Theme Switcher -->
+        <header class="calc-header">
+            <div class="brand">
+                <span class="logo-icon">◈</span> ProCalc
+            </div>
+            <div class="controls">
+                <button id="history-toggle" class="icon-btn" title="History">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </button>
+                <button id="sound-toggle" class="icon-btn" title="Sound">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </button>
+                <button id="theme-toggle" class="icon-btn active" title="Themes">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Theme Selector Panel -->
+        <div class="theme-panel" id="theme-panel">
+            <div class="theme-grid">
+                <!-- Themes injected via JS -->
+            </div>
+        </div>
+
+        <!-- Display Area -->
+        <div class="display-area">
+            <div class="history-display" id="prev-calc"></div>
+            <div class="current-display" id="curr-calc">0</div>
+        </div>
+
+        <!-- Keypad -->
+        <div class="keypad">
+            <button class="btn btn-func" data-action="clear">AC</button>
+            <button class="btn btn-func" data-action="delete">⌫</button>
+            <button class="btn btn-op" data-action="percent">%</button>
+            <button class="btn btn-op" data-action="divide">÷</button>
+            
+            <button class="btn btn-num" data-num="7">7</button>
+            <button class="btn btn-num" data-num="8">8</button>
+            <button class="btn btn-num" data-num="9">9</button>
+            <button class="btn btn-op" data-action="multiply">×</button>
+            
+            <button class="btn btn-num" data-num="4">4</button>
+            <button class="btn btn-num" data-num="5">5</button>
+            <button class="btn btn-num" data-num="6">6</button>
+            <button class="btn btn-op" data-action="subtract">−</button>
+            
+            <button class="btn btn-num" data-num="1">1</button>
+            <button class="btn btn-num" data-num="2">2</button>
+            <button class="btn btn-num" data-num="3">3</button>
+            <button class="btn btn-op" data-action="add">+</button>
+            
+            <button class="btn btn-num btn-zero" data-num="0">0</button>
+            <button class="btn btn-num" data-num=".">.</button>
+            <button class="btn btn-equals" data-action="calculate">=</button>
+        </div>
+    </main>
+
+    <!-- History Sidebar -->
+    <aside class="history-sidebar" id="history-sidebar">
+        <div class="history-header">
+            <h3>History</h3>
+            <button id="close-history" class="icon-btn">✕</button>
+        </div>
+        <div class="history-list" id="history-list">
+            <div class="empty-state">No calculations yet</div>
+        </div>
+        <button id="clear-history" class="btn-clear-history">Clear All</button>
+    </aside>
+
+    <script src="script.js"></script>
+</body>
+</html>
