@@ -1,0 +1,417 @@
+/* =========================================
+   1. CORE VARIABLES & RESET
+   ========================================= */
+:root {
+    /* Default Theme (Cyberpunk-ish) */
+    --bg-color: #0f172a;
+    --calc-bg: rgba(30, 41, 59, 0.7);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.5);
+    --btn-bg: rgba(255, 255, 255, 0.05);
+    --btn-hover: rgba(255, 255, 255, 0.1);
+    --btn-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --border-radius: 16px;
+    --font-main: 'Inter', sans-serif;
+    --font-display: 'JetBrains Mono', monospace;
+    --transition-speed: 0.3s;
+    --glass-blur: 20px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background-color 0.5s ease;
+}
+
+/* Background Atmosphere */
+.bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.6;
+    animation: float 10s infinite ease-in-out;
+}
+.orb-1 { width: 300px; height: 300px; background: #4f46e5; top: -50px; left: -50px; }
+.orb-2 { width: 400px; height: 400px; background: #ec4899; bottom: -100px; right: -100px; animation-delay: -5s; }
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 50px); }
+}
+
+/* =========================================
+   2. CALCULATOR CONTAINER
+   ========================================= */
+.calculator-container {
+    width: 100%;
+    max-width: 380px;
+    background: var(--calc-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    transition: all var(--transition-speed) ease;
+}
+
+/* =========================================
+   3. HEADER & THEME SWITCHER
+   ========================================= */
+.calc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.brand {
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon { color: var(--accent-color); }
+
+.controls { display: flex; gap: 12px; }
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover, .icon-btn.active {
+    color: var(--text-primary);
+    background: var(--btn-hover);
+}
+
+/* Theme Panel */
+.theme-panel {
+    position: absolute;
+    top: 60px;
+    right: 24px;
+    background: var(--calc-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px;
+    width: 280px;
+    z-index: 100;
+    display: none; /* Hidden by default */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(20px);
+}
+
+.theme-panel.open { display: block; animation: slideDown 0.3s ease; }
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.theme-option {
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--btn-bg);
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    transition: 0.2s;
+}
+
+.theme-option:hover { background: var(--btn-hover); color: var(--text-primary); }
+.theme-option.active { border-color: var(--accent-color); color: var(--accent-color); background: rgba(255,255,255,0.05); }
+
+/* =========================================
+   4. DISPLAY
+   ========================================= */
+.display-area {
+    text-align: right;
+    margin-bottom: 24px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 10px;
+}
+
+.history-display {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    min-height: 1.2em;
+    margin-bottom: 4px;
+}
+
+.current-display {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: 1.1;
+}
+
+/* =========================================
+   5. KEYPAD
+   ========================================= */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.btn {
+    border: none;
+    outline: none;
+    background: var(--btn-bg);
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-family: var(--font-main);
+    padding: 20px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.1s;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Micro-interactions */
+.btn:active { transform: scale(0.95); }
+.btn:hover { background: var(--btn-hover); }
+
+/* Specific Button Styles */
+.btn-op { color: var(--accent-color); font-weight: 600; }
+.btn-func { color: var(--text-secondary); font-size: 1rem; }
+.btn-equals { background: var(--accent-color); color: #000; font-weight: 700; box-shadow: 0 0 15px var(--accent-glow); }
+.btn-equals:hover { opacity: 0.9; }
+.btn-zero { grid-column: span 2; }
+
+/* =========================================
+   6. HISTORY SIDEBAR
+   ========================================= */
+.history-sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background: var(--bg-color);
+    border-left: 1px solid rgba(255,255,255,0.1);
+    z-index: 200;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-sidebar.open { right: 0; }
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 12px;
+}
+
+.history-list { flex: 1; overflow-y: auto; }
+
+.history-item {
+    background: rgba(255,255,255,0.03);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.history-item:hover { background: rgba(255,255,255,0.08); }
+.history-expression { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px; }
+.history-result { font-size: 1.1rem; color: var(--accent-color); font-weight: 600; text-align: right; }
+
+.btn-clear-history {
+    width: 100%;
+    padding: 12px;
+    margin-top: 16px;
+    background: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* =========================================
+   7. 10 THEMES IMPLEMENTATION
+   ========================================= */
+
+/* 1. Cyberpunk (Default) */
+[data-theme="cyberpunk"] {
+    --bg-color: #050505;
+    --calc-bg: #0a0a0a;
+    --accent-color: #00f3ff;
+    --accent-glow: rgba(0, 243, 255, 0.4);
+    --btn-bg: #111;
+    --font-display: 'Courier New', monospace;
+}
+
+/* 2. Minimal White */
+[data-theme="minimal"] {
+    --bg-color: #f0f2f5;
+    --calc-bg: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #888;
+    --accent-color: #3b82f6;
+    --accent-glow: transparent;
+    --btn-bg: #f8f9fa;
+    --btn-hover: #e9ecef;
+    --glass-blur: 0px;
+    .btn-equals { color: white; }
+}
+
+/* 3. Glass UI */
+[data-theme="glass"] {
+    --bg-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --calc-bg: rgba(255, 255, 255, 0.25);
+    --text-primary: #fff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --accent-color: #fff;
+    --btn-bg: rgba(255, 255, 255, 0.1);
+    --btn-hover: rgba(255, 255, 255, 0.2);
+    --border-radius: 24px;
+    .btn { border: 1px solid rgba(255,255,255,0.2); }
+}
+
+/* 4. Gradient Animated */
+[data-theme="gradient"] {
+    --bg-color: #111;
+    --calc-bg: #1a1a1a;
+    --accent-color: #ff00cc;
+    --btn-bg: linear-gradient(145deg, #222, #1a1a1a);
+    --font-display: 'Poppins', sans-serif;
+    .btn-equals { background: linear-gradient(45deg, #ff00cc, #333399); }
+}
+
+/* 5. Retro Digital */
+[data-theme="retro"] {
+    --bg-color: #2b2b2b;
+    --calc-bg: #3d3d3d;
+    --text-primary: #9ea792; /* LCD Green */
+    --text-secondary: #7a856f;
+    --accent-color: #9ea792;
+    --btn-bg: #222;
+    --border-radius: 4px;
+    --font-display: 'Courier New', monospace;
+    .btn { border-bottom: 4px solid #111; }
+    .btn:active { transform: translateY(4px); border-bottom: 0; }
+}
+
+/* 6. Futuristic HUD */
+[data-theme="hud"] {
+    --bg-color: #000000;
+    --calc-bg: transparent;
+    --text-primary: #00ff41;
+    --text-secondary: #008f11;
+    --accent-color: #00ff41;
+    --btn-bg: rgba(0, 255, 65, 0.05);
+    --border-radius: 0px;
+    --font-display: 'Courier New', monospace;
+    .calculator-container { border: 2px solid #00ff41; box-shadow: 0 0 20px rgba(0,255,65,0.2); }
+    .btn { border: 1px solid #00ff41; }
+}
+
+/* 7. Neumorphism (Soft UI) */
+[data-theme="neumorphism"] {
+    --bg-color: #e0e5ec;
+    --calc-bg: #e0e5ec;
+    --text-primary: #4a4a4a;
+    --text-secondary: #8a8a8a;
+    --accent-color: #6d5dfc;
+    --btn-bg: #e0e5ec;
+    --btn-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+    --border-radius: 50%; /* Round buttons */
+    .btn { box-shadow: var(--btn-shadow); border-radius: 50%; width: 60px; height: 60px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .btn:active { box-shadow: inset 6px 6px 10px 0 rgba(163,177,198, 0.7), inset -6px -6px 10px 0 rgba(255,255,255, 0.8); }
+    .btn-zero { width: 130px; border-radius: 30px; }
+    .keypad { gap: 20px; }
+}
+
+/* 8. Transparent Floating */
+[data-theme="transparent"] {
+    --bg-color: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    --bg-size: cover;
+    --calc-bg: rgba(255, 255, 255, 0.15);
+    --text-primary: #fff;
+    --text-secondary: rgba(255,255,255,0.8);
+    --accent-color: #fff;
+    --btn-bg: rgba(255,255,255,0.1);
+    --border-radius: 20px;
+    body { background-size: cover; background-position: center; }
+}
+
+/* 9. Bold Dashboard */
+[data-theme="dashboard"] {
+    --bg-color: #1e1e2e;
+    --calc-bg: #28293d;
+    --text-primary: #fff;
+    --text-secondary: #a6adc8;
+    --accent-color: #cba6f7;
+    --btn-bg: #313244;
+    --border-radius: 8px;
+    .btn-op { color: #f38ba8; }
+    .btn-func { color: #fab387; }
+}
+
+/* 10. iPhone Style */
+[data-theme="iphone"] {
+    --bg-color: #000;
+    --calc-bg: #000;
+    --text-primary: #fff;
+    --text-secondary: #a5a5a5;
+    --accent-color: #ff9f0a;
+    --btn-bg: #333333;
+    --btn-hover: #737373;
+    --border-radius: 40px;
+    .btn-op { background: #ff9f0a; color: #fff; }
+    .btn-func { background: #a5a5a5; color: #000; }
+    .btn-func:hover { background: #d4d4d2; }
+    .btn-num { background: #333333; }
+}
+
+/* =========================================
+   8. RESPONSIVENESS
+   ========================================= */
+@media (max-width: 400px) {
+    .calculator-container { width: 100%; height: 100vh; border-radius: 0; border: none; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 40px; }
+    .keypad { gap: 16px; }
+    .btn { padding: 24px 0; font-size: 1.5rem; }
+    .current-display { font-size: 3.5rem; }
+}
